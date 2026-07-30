@@ -80,6 +80,7 @@
       "device": "essi",
       "kernelRelease": "6.1.157-android14-11",
       "kernelVersion": "Linux version 6.1.157-android14-11 (build-user@build-host) (Android (10087095, +pgo, +bolt, +lto, -mlgo, based on r487747c) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362), LLD 17.0.2) #1 SMP PREEMPT Tue Jun 16 06:24:04 UTC 2026",
+      "kernelBuildVersion": "#1 SMP PREEMPT Tue Jun 16 06:24:04 UTC 2026",
       "buildDisplay": "BP4A.251205.006.S721U1UESCDZF3",
       "buildFingerprint": "samsung/r12suew/essi:16/BP4A.251205.006/S721U1UESCDZF3:user/release-keys",
       "sdk": 36,
