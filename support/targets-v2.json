@@ -72,6 +72,54 @@
         "kmi": "android14-6.1",
         "managerPackage": "me.weishu.kernelsu"
       }
+    },
+    {
+      "profileId": "r12s-S721U1UESBDZE1",
+      "manufacturer": "samsung",
+      "model": "SM-S721U1",
+      "device": "r12s",
+      "kernelRelease": "6.1.157-android14-11",
+      "kernelVersion": "Linux version 6.1.157-android14-11 (build-user@build-host) (Android (10087095, +pgo, +bolt, +lto, -mlgo, based on r487747c) clang version 17.0.2, LLD 17.0.2) #1 SMP PREEMPT Fri May 8 10:52:48 UTC 2026",
+      "kernelBuildVersion": "#1 SMP PREEMPT Fri May 8 10:52:48 UTC 2026",
+      "buildDisplay": "BP4A.251205.006.S721U1UESBDZE1",
+      "buildFingerprint": "samsung/r12suew/r12s:16/BP4A.251205.006/S721U1UESBDZE1:user/release-keys",
+      "sdk": 36,
+      "abi": "arm64-v8a",
+      "pageSize": 4096,
+      "exploit": {
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/essi-S721NKSSCDZF3/cve-2026-43499-app.so",
+        "size": 104128
+      },
+      "kernelsu": {
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-samsung-android14-6.1-kdp",
+        "size": 6532168,
+        "kmi": "android14-6.1",
+        "managerPackage": "me.weishu.kernelsu"
+      }
+    },
+    {
+      "profileId": "essi-S721NKSSCDZF3",
+      "manufacturer": "samsung",
+      "model": "SM-S721N",
+      "device": "essi",
+      "kernelRelease": "6.1.157-android14-11",
+      "kernelVersion": "Linux version 6.1.157-android14-11",
+      "kernelBuildVersion": "#1 SMP PREEMPT",
+      "buildDisplay": "BP4A.251205.006.S721NKSSCDZF3",
+      "buildFingerprint": "samsung/r12sksx/essi:16/BP4A.251205.006/S721NKSSCDZF3:user/release-keys",
+      "sdk": 36,
+      "abi": "arm64-v8a",
+      "pageSize": 4096,
+      "exploit": {
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/essi-S721NKSSCDZF3/cve-2026-43499-app.so",
+        "size": 104128
+      },
+      "kernelsu": {
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-samsung-android14-6.1-kdp",
+        "size": 6532168,
+        "kmi": "android14-6.1",
+        "managerPackage": "me.weishu.kernelsu"
+      }
     }
   ]
 }
