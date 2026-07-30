@@ -1,0 +1,45 @@
+#ifndef ESSI_S721U1UESCDZF3_TARGET_H
+#define ESSI_S721U1UESCDZF3_TARGET_H
+
+/*
+ * SM-S721U1 DZF3 uses the same 6.1.157 code and BTF layouts as S721N DZF3.
+ * The U1 image has its own data layout, build fingerprint, and P0 table;
+ * override every value that differs from the Korean image below.
+ */
+#ifndef BUILD_FINGERPRINT
+#define BUILD_FINGERPRINT \
+  "samsung/r12suew/essi:16/BP4A.251205.006/S721U1UESCDZF3:user/release-keys"
+#endif
+
+#include "../essi-S721NKSSCDZF3/target.h"
+
+#undef BUILD_VARIANT_LABEL
+#if defined(APP_PAYLOAD) && APP_PAYLOAD
+#define BUILD_VARIANT_LABEL "essi-S721U1UESCDZF3-app-physical-p0-oracle"
+#undef P0_FINGERPRINT_HEADER
+#define P0_FINGERPRINT_HEADER \
+  "targets/essi-S721U1UESCDZF3/p0_fingerprint.h"
+#else
+#define BUILD_VARIANT_LABEL "essi-S721U1UESCDZF3-root-umh"
+#endif
+
+#undef ANON_PIPE_BUF_OPS_OFF
+#define ANON_PIPE_BUF_OPS_OFF 0x0121db10ULL
+#undef ASHMEM_FOPS_OFF
+#define ASHMEM_FOPS_OFF 0x013d9c88ULL
+#undef KMALLOC_CACHES_OFF
+#define KMALLOC_CACHES_OFF 0x017a7958ULL
+#undef SLIDE_NFULNL_LOGGER_NAME_OFF
+#define SLIDE_NFULNL_LOGGER_NAME_OFF 0x016dcfefULL
+
+#undef ANON_PIPE_BUF_OPS
+#define ANON_PIPE_BUF_OPS (KIMAGE_TEXT_BASE + ANON_PIPE_BUF_OPS_OFF)
+#undef ASHMEM_FOPS
+#define ASHMEM_FOPS (KIMAGE_TEXT_BASE + ASHMEM_FOPS_OFF)
+#undef KMALLOC_CACHES
+#define KMALLOC_CACHES (KIMAGE_TEXT_BASE + KMALLOC_CACHES_OFF)
+#undef SLIDE_NFULNL_LOGGER_NAME_IMAGE
+#define SLIDE_NFULNL_LOGGER_NAME_IMAGE \
+  (KIMAGE_TEXT_BASE + SLIDE_NFULNL_LOGGER_NAME_OFF)
+
+#endif
