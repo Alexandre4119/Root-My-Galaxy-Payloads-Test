@@ -19,6 +19,8 @@
 #undef P0_FINGERPRINT_HEADER
 #define P0_FINGERPRINT_HEADER \
   "targets/essi-S721U1UESCDZF3/p0_fingerprint.h"
+#define DEFAULT_ATTEMPT_TIMEOUT_SEC 180
+#define DEFAULT_P0_ATTEMPT_TIMEOUT_SEC 45
 #else
 #define BUILD_VARIANT_LABEL "essi-S721U1UESCDZF3-root-umh"
 #endif
