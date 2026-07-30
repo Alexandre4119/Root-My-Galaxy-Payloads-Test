@@ -15,11 +15,11 @@
       "abi": "arm64-v8a",
       "pageSize": 4096,
       "exploit": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/pa3q-S938NKSUACZF1/cve-2026-43499-app.so",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/artifacts/pa3q-S938NKSUACZF1/cve-2026-43499-app.so",
         "size": 104128
       },
       "kernelsu": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-s25u-kdp",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/kernelsu/ksud-s25u-kdp",
         "size": 6407096,
         "kmi": "android15-6.6",
         "managerPackage": "me.weishu.kernelsu"
@@ -39,11 +39,11 @@
       "abi": "arm64-v8a",
       "pageSize": 4096,
       "exploit": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/pa3q-S9380ZHUBCZF1/cve-2026-43499-app.so",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/artifacts/pa3q-S9380ZHUBCZF1/cve-2026-43499-app.so",
         "size": 104128
       },      
       "kernelsu": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-s25u-kdp",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/kernelsu/ksud-s25u-kdp",
         "size": 6407096,
         "kmi": "android15-6.6",
         "managerPackage": "me.weishu.kernelsu"
@@ -63,59 +63,34 @@
       "abi": "arm64-v8a",
       "pageSize": 4096,
       "exploit": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/e3q-S928USQS6DZF2/cve-2026-43499-app.so",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/artifacts/e3q-S928USQS6DZF2/cve-2026-43499-app.so",
         "size": 104128
       },
       "kernelsu": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-e3q-S928USQS6DZF2-kdp",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/kernelsu/ksud-e3q-S928USQS6DZF2-kdp",
         "size": 4726416,
         "kmi": "android14-6.1",
         "managerPackage": "me.weishu.kernelsu"
       }
     },
     {
-      "profileId": "r12s-S721U1UESBDZE1",
+      "profileId": "essi-S721U1UESCDZF3",
       "manufacturer": "samsung",
       "model": "SM-S721U1",
-      "device": "r12s",
-      "kernelRelease": "6.1.157-android14-11",
-      "kernelVersion": "Linux version 6.1.157-android14-11 (build-user@build-host) (Android (10087095, +pgo, +bolt, +lto, -mlgo, based on r487747c) clang version 17.0.2, LLD 17.0.2) #1 SMP PREEMPT Fri May 8 10:52:48 UTC 2026",
-      "kernelBuildVersion": "#1 SMP PREEMPT Fri May 8 10:52:48 UTC 2026",
-      "buildDisplay": "BP4A.251205.006.S721U1UESBDZE1",
-      "buildFingerprint": "samsung/r12suew/r12s:16/BP4A.251205.006/S721U1UESBDZE1:user/release-keys",
-      "sdk": 36,
-      "abi": "arm64-v8a",
-      "pageSize": 4096,
-      "exploit": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/essi-S721NKSSCDZF3/cve-2026-43499-app.so",
-        "size": 104128
-      },
-      "kernelsu": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-samsung-android14-6.1-kdp",
-        "size": 6532168,
-        "kmi": "android14-6.1",
-        "managerPackage": "me.weishu.kernelsu"
-      }
-    },
-    {
-      "profileId": "essi-S721NKSSCDZF3",
-      "manufacturer": "samsung",
-      "model": "SM-S721N",
       "device": "essi",
       "kernelRelease": "6.1.157-android14-11",
-      "kernelVersion": "Linux version 6.1.157-android14-11",
-      "kernelBuildVersion": "#1 SMP PREEMPT",
-      "buildDisplay": "BP4A.251205.006.S721NKSSCDZF3",
-      "buildFingerprint": "samsung/r12sksx/essi:16/BP4A.251205.006/S721NKSSCDZF3:user/release-keys",
+      "kernelVersion": "Linux version 6.1.157-android14-11 (build-user@build-host) (Android (10087095, +pgo, +bolt, +lto, -mlgo, based on r487747c) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362), LLD 17.0.2) #1 SMP PREEMPT Tue Jun 16 06:24:04 UTC 2026",
+      "buildDisplay": "BP4A.251205.006.S721U1UESCDZF3",
+      "buildFingerprint": "samsung/r12suew/essi:16/BP4A.251205.006/S721U1UESCDZF3:user/release-keys",
       "sdk": 36,
       "abi": "arm64-v8a",
       "pageSize": 4096,
       "exploit": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/essi-S721NKSSCDZF3/cve-2026-43499-app.so",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/artifacts/essi-S721U1UESCDZF3/cve-2026-43499-app.so",
         "size": 104128
       },
       "kernelsu": {
-        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/kernelsu/ksud-samsung-android14-6.1-kdp",
+        "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/kernelsu/ksud-samsung-android14-6.1-kdp",
         "size": 6532168,
         "kmi": "android14-6.1",
         "managerPackage": "me.weishu.kernelsu"
