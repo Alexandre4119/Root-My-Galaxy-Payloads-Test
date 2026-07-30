@@ -18,6 +18,7 @@ It intentionally does not contain Android application source code.
 | `pa3q-S938NKSUACZF1` | Galaxy S25 Ultra `SM-S938N` | `BP4A.251205.006.S938NKSUACZF1` | `android15-6.6` | Device-tested |
 | `pa3q-S9380ZHUBCZF1` | Galaxy S25 Ultra `SM-S9380` | `BP4A.251205.006.S9380ZHUBCZF1` | `android15-6.6` | Device-tested |
 | `e3q-S928USQS6DZF2` | Galaxy S24 Ultra `SM-S928U/SM-S928U1` (Snapdragon 8 Gen 3) | `BP4A.251205.006.S928USQS6DZF2` | `6.1.145-android14-11-33419968-abS928USQS6DZF2` | Hardware debugging in progress |
+| `essi-S721U1UESCDZF3` | Galaxy S24 FE `SM-S721U1` | `BP4A.251205.006.S721U1UESCDZF3` | `6.1.157-android14-11` | Hardware untested |
 
 Profiles are exact-firmware profiles. A matching model with a different build
 is not equivalent and must be ported separately.
@@ -44,6 +45,7 @@ version 2.
 make TARGET=pa3q-S938NKSUACZF1 ANDROID_NDK_HOME=/path/to/android-ndk
 make TARGET=e3q-S928USQS6DZF2 ANDROID_NDK_HOME=/path/to/android-ndk
 make TARGET=essi-S721NKSSCDZF3 ANDROID_NDK_HOME=/path/to/android-ndk
+make TARGET=essi-S721U1UESCDZF3 ANDROID_NDK_HOME=/path/to/android-ndk
 make TARGET=e1s-S921BXXSFDZF2 ANDROID_NDK_HOME=/path/to/android-ndk
 make TARGET=a15-A155NKSS6BYH1 ANDROID_NDK_HOME=/path/to/android-ndk
 ```
