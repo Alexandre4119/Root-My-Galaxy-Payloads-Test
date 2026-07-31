@@ -232,6 +232,8 @@ void futex_init(void)
     size_t p = 1;
     while (p < hs) p <<= 1;
     futex_hashsize = p;
+    pr_info("futex_hashsize %zu (possible cpus %zu)\n", futex_hashsize,
+            __num_possible_cpus());
 }
 uint32_t futex_hash(size_t addr, size_t mm)
 {
