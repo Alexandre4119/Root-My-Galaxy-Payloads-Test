@@ -369,6 +369,7 @@ int select_slide_payload_slot(uintptr_t offset);
 int select_slide_payload_index(size_t index);
 #if defined(APP_PHYS_P0_ORACLE) && APP_PHYS_P0_ORACLE
 int app_trigger_fops_slide_route(void);
+int slide_route_keeper_start(void);
 #endif
 #endif
 

