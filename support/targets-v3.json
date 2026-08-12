@@ -183,6 +183,7 @@
       "displayName": "Galaxy S24 FE | Kernel 6.1.157",
       "models": ["SM-S721U1"],
       "kernelVersions": ["6.1.157"],
+      "requiresFreshP0Session": true,
       "exploit": {
         "url": "https://raw.githubusercontent.com/Alexandre4119/Root-My-Galaxy-Payloads-Test/main/artifacts/essi-S721U1UESCDZF3/cve-2026-43499-app.so",
         "size": 104128
